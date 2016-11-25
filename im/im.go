@@ -357,6 +357,10 @@ func main() {
 	log.Infof("port:%d redis address:%s\n",
 		config.port,  config.redis_address)
 
+	log.Infof("mysql:%s", config.mysqldb_datasource)
+	log.Infof("mssql:%s", config.mssqldb_datasource)
+
+
 	log.Infof("redis address:%s password:%s db:%d\n", 
 		config.redis_address, config.redis_password, config.redis_db)
 

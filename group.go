@@ -22,6 +22,7 @@ package main
 import "sync"
 import "database/sql"
 import _ "github.com/go-sql-driver/mysql"
+import _ "github.com/denisenkom/go-mssqldb"
 import log "github.com/golang/glog"
 
 type Group struct {
@@ -89,7 +90,7 @@ func (group *Group) IsEmpty() bool {
 
 func CreateGroup(db *sql.DB, appid int64, master int64, name string, super int8) int64 {
 	log.Info("create group super:", super)
-	stmtIns, err := db.Prepare("INSERT INTO `group`(appid, master, name, super) VALUES( ?, ?, ?, ? )")
+	stmtIns, err := db.Prepare("INSERT INTO [group](appid, master, name, super) VALUES( ?, ?, ?, ? )")
 	if err != nil {
 		log.Info("error:", err)
 		return 0
@@ -117,7 +118,7 @@ func DeleteGroup(db *sql.DB, group_id int64) bool {
 		return false
 	}
 
-	stmt1, err = tx.Prepare("DELETE FROM `group` WHERE id=?")
+	stmt1, err = tx.Prepare("DELETE FROM [group] WHERE id=?")
 	if err != nil {
 		log.Info("error:", err)
 		goto ROLLBACK
@@ -180,7 +181,8 @@ func RemoveGroupMember(db *sql.DB, group_id int64, uid int64) bool {
 }
 
 func LoadAllGroup(db *sql.DB) (map[int64]*Group, error) {
-	stmtIns, err := db.Prepare("SELECT id, appid, super FROM `group`")
+	log.Infof("load all group...")
+	stmtIns, err := db.Prepare("SELECT id, appid, super FROM [group]")
 	if err != nil {
 		log.Info("error:", err)
 		return nil, nil
@@ -189,6 +191,10 @@ func LoadAllGroup(db *sql.DB) (map[int64]*Group, error) {
 	defer stmtIns.Close()
 	groups := make(map[int64]*Group)
 	rows, err := stmtIns.Query()
+	if err != nil {
+		log.Info("error:", err)
+		return nil, err
+	}
 	for rows.Next() {
 		var id int64
 		var appid int64
@@ -207,6 +213,7 @@ func LoadAllGroup(db *sql.DB) (map[int64]*Group, error) {
 			group := NewGroup(id, appid, members)
 			groups[group.gid] = group
 		}
+		log.Infof("group id:%d", id)
 	}
 	return groups, nil
 }
@@ -221,6 +228,10 @@ func LoadGroupMember(db *sql.DB, group_id int64) ([]int64, error) {
 	defer stmtIns.Close()
 	members := make([]int64, 0, 4)
 	rows, err := stmtIns.Query(group_id)
+	if err != nil {
+		log.Info("error:", err)
+		return nil, err
+	}
 	for rows.Next() {
 		var uid int64
 		rows.Scan(&uid)

@@ -25,6 +25,7 @@ import "strings"
 import "time"
 import "database/sql"
 import "github.com/garyburd/redigo/redis"
+import _ "github.com/denisenkom/go-mssqldb"
 import _ "github.com/go-sql-driver/mysql"
 import log "github.com/golang/glog"
 
@@ -190,11 +191,24 @@ func (group_manager *GroupManager) HandleMemberRemove(data string) {
 }
 
 func (group_manager *GroupManager) Reload() {
-	db, err := sql.Open("mysql", config.mysqldb_datasource)
-	if err != nil {
-		log.Info("error:", err)
+	var db *sql.DB
+	var err error
+	if config.mysqldb_datasource != "" {
+		db, err = sql.Open("mysql", config.mysqldb_datasource)
+		if err != nil {
+			log.Info("error:", err)
+			return
+		}
+	} else if config.mssqldb_datasource != "" {
+		db, err = sql.Open("mssql", config.mssqldb_datasource)
+		if err != nil {
+			log.Info("error:", err)
+			return
+		}
+	} else {
 		return
 	}
+
 	defer db.Close()
 
 	groups, err := LoadAllGroup(db)

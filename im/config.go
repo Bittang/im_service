@@ -26,8 +26,10 @@ import "github.com/richmonkey/cfg"
 
 type Config struct {
 	port                int
+
+	//数据库配置
 	mysqldb_datasource  string
-	mysqldb_appdatasource  string
+	mssqldb_datasource  string
 
 	kefu_appid          int64
 
@@ -107,7 +109,10 @@ func read_cfg(cfg_path string) *Config {
 	db := get_opt_int(app_cfg, "redis_db")
 	config.redis_db = int(db)
 
-	config.mysqldb_datasource = get_string(app_cfg, "mysqldb_source")
+
+	config.mysqldb_datasource = get_opt_string(app_cfg, "mysqldb_source")
+	config.mssqldb_datasource = get_opt_string(app_cfg, "mssqldb_source")
+
 	config.socket_io_address = get_string(app_cfg, "socket_io_address")
 	config.tls_address = get_opt_string(app_cfg, "tls_address")
 	config.cert_file = get_opt_string(app_cfg, "cert_file")
