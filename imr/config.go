@@ -30,6 +30,8 @@ type RouteConfig struct {
 	mysqldb_datasource  string
 	mssqldb_datasource  string
 
+	push_rpc_address    string
+
 	redis_address       string
 	redis_password      string
 	redis_db            int
@@ -89,6 +91,8 @@ func read_route_cfg(cfg_path string) *RouteConfig {
 
 	config.mysqldb_datasource = get_opt_string(app_cfg, "mysqldb_source")
 	config.mssqldb_datasource = get_opt_string(app_cfg, "mssqldb_source")
+
+	config.push_rpc_address = get_string(app_cfg, "push_rpc_address")
 
 	config.redis_address = get_string(app_cfg, "redis_address")
 	config.redis_password = get_opt_string(app_cfg, "redis_password")

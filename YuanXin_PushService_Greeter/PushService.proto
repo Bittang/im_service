@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+//option java_multiple_files = true;
+//option java_package = "com.yuanxin.pushservice.greeter";
+//option java_outer_classname = "PushServiceProto";
+
+package YuanXin.PushService.Greeter;
+
+
+service Service{
+    rpc GrpcPushMessage(PushModel)returns(Result){}
+    rpc GrpcPushSystemMessage(PushSystemModel)returns(Result){}
+}
+message PushModel{
+  string appid = 1;
+  string title = 2;//""
+  string alert = 3;
+  int32 type = 4; //6
+  string heards =5;//""
+  string action =6;//""
+  string rangeid =7;//""
+  string userids =8;
+  int64  sender = 9;
+  int64  groupid = 10;//0为点对点消息
+}
+
+message PushSystemModel{
+  string appid = 1;
+  int64  uid = 2;
+  string content = 3;
+}
+
+message Result{
+  string message = 1;
+  int32 stauts = 2;
+}
