@@ -185,7 +185,7 @@ func LoadAllGroup(db *sql.DB) (map[int64]*Group, error) {
 	stmtIns, err := db.Prepare("SELECT id, appid, super FROM [group]")
 	if err != nil {
 		log.Info("error:", err)
-		return nil, nil
+		return nil, err
 	}
 
 	defer stmtIns.Close()
@@ -203,7 +203,7 @@ func LoadAllGroup(db *sql.DB) (map[int64]*Group, error) {
 		members, err := LoadGroupMember(db, id)
 		if err != nil {
 			log.Info("error:", err)
-			continue
+			return nil, err
 		}
 
 		if super != 0 {

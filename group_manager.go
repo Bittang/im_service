@@ -190,36 +190,49 @@ func (group_manager *GroupManager) HandleMemberRemove(data string) {
 	}
 }
 
-func (group_manager *GroupManager) Reload() {
+func (group_manager *GroupManager) ReloadGroup() bool {
 	var db *sql.DB
 	var err error
 	if config.mysqldb_datasource != "" {
 		db, err = sql.Open("mysql", config.mysqldb_datasource)
 		if err != nil {
 			log.Info("error:", err)
-			return
+			return false
 		}
 	} else if config.mssqldb_datasource != "" {
 		db, err = sql.Open("mssql", config.mssqldb_datasource)
 		if err != nil {
 			log.Info("error:", err)
-			return
+			return false
 		}
 	} else {
-		return
-	}
+		return false
 
+	}
 	defer db.Close()
 
 	groups, err := LoadAllGroup(db)
 	if err != nil {
 		log.Info("error:", err)
-		return
+		return false
 	}
 
 	group_manager.mutex.Lock()
 	defer group_manager.mutex.Unlock()
 	group_manager.groups = groups
+
+	return true
+}
+
+func (group_manager *GroupManager) Reload() {
+	//循环直到成功
+	for {
+		r := group_manager.ReloadGroup()
+		if r {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
 }
 
 func (group_manager *GroupManager) RunOnce() bool {

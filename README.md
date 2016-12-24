@@ -9,21 +9,17 @@
 
 ##编译运行
 
-1. 安装go以及依赖包
-2. make
-3. 安装mysql数据库, redis, 并导入db.sql
-4. 修改配置文件
-5. ./im im.cfg;./ims ims.cfg; ./imr imr.cfg
-
-注:工程中未包含平台的数据库结构文件
+1. 安装go编译环境
+参考链接:https://golang.org/doc/install
 
 
-##编译proto文件
-1. go
-protoc -Irpc/ rpc/rpc.proto --go_out=plugins=grpc:rpc
+2. 下载im_service代码
+  cd $GOPATH/src/github.com/GoBelieveIO
+  git clone https://github.com/GoBelieveIO/im_service.git
 
-2. python
-python -m grpc.tools.protoc -Irpc --python_out=rpc/ --grpc_python_out=rpc/ rpc/rpc.proto
+  
+3  编译proto文件
+   cd im_service 
 
 
 ##编译推送的proto文件

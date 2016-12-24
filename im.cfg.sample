@@ -3,8 +3,10 @@ port=23000
 #存储服务器地址 "服务器1的ip:port 服务器2的ip:port ..." 多个存储服务器之间用空格隔开 顺序要保证一致
 storage_pool=127.0.0.1:3333
 storage_rpc_pool=127.0.0.1:13333
+
 #路由服务器地址 "服务器1的ip:port 服务器2的ip:port ..." 多个存储服务器之间用空格隔开 顺序要保证一致
 route_pool=127.0.0.1:4444
+
 #websocket的监听地址 ip:port
 socket_io_address=:13890
 #wss监听地址
@@ -27,6 +29,7 @@ redis_address=127.0.0.1:6379
 
 
 
+
 #mysql的链接地址  用户名:密码@tcp(服务器地址:服务器端口)/数据库名称
 mysqldb_source=root:123456@tcp(127.0.0.1:3306)/im
 
@@ -41,6 +44,5 @@ redis_db=0
 
 #客服的appid
 kefu_appid=0
-
 
 
