@@ -10,20 +10,86 @@
 ##编译运行
 
 1. 安装go编译环境
-参考链接:https://golang.org/doc/install
 
+   参考链接:https://golang.org/doc/install
 
 2. 下载im_service代码
-  cd $GOPATH/src/github.com/GoBelieveIO
-  git clone https://github.com/GoBelieveIO/im_service.git
 
-  
-3  编译proto文件
-   cd im_service 
+   cd $GOPATH/src/github.com/GoBelieveIO
+   
+   git clone https://github.com/GoBelieveIO/im_service.git
+
+3. 编译proto文件
+
+   cd im_service
 
 
-##编译推送的proto文件
-1. go
-protoc -IYuanXin_PushService_Greeter/ YuanXin_PushService_Greeter/PushService.proto --go_out=plugins=grpc:YuanXin_PushService_Greeter
+   //注意需要翻墙
+   go get google.golang.org/grpc
 
-python -m grpc.tools.protoc -IYuanXin_PushService_Greeter/ --python_out=YuanXin_PushService_Greeter/ --grpc_python_out=YuanXin_PushService_Greeter/ YuanXin_PushService_Greeter/PushService.proto
+   go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
+
+   protoc -IYuanXin_PushService_Greeter/ YuanXin_PushService_Greeter/PushService.proto --go_out=plugins=grpc:YuanXin_PushService_Greeter
+
+   protoc -Irpc/ rpc/rpc.proto --go_out=plugins=grpc:rpc
+
+   python -m grpc.tools.protoc -Irpc --python_out=rpc/ --grpc_python_out=rpc/ rpc/rpc.proto
+
+4. 编译
+
+  cd im_service
+
+  mkdir bin
+
+  go get github.com/bitly/go-simplejson
+
+  go get github.com/golang/glog
+
+  go get github.com/go-sql-driver/mysql
+
+  go get github.com/garyburd/redigo/redis
+
+  go get github.com/googollee/go-engine.io
+
+  go get github.com/richmonkey/cfg
+
+  go get github.com/syndtr/goleveldb/leveldb/opt
+
+  go get github.com/syndtr/goleveldb/leveldb
+
+  go get github.com/valyala/gorpc
+
+  //注意需要翻墙
+
+  go get google.golang.org/grpc
+
+  make install
+
+  可执行程序在bin目录下
+
+5. 安装mysql数据库, redis, 并导入db.sql
+
+6. 配置程序
+   配置项的说明参考ims.cfg.sample, imr.cfg.sample, im.cfg.sample
+
+
+7. 启动程序
+
+    创建ims消息存放路径
+
+    创建日志文件路径
+    mkdir /data/logs/ims
+    mkdir /data/logs/imr
+    mkdir /data/logs/im
+
+
+    pushd `dirname $0` > /dev/null
+    BASEDIR=`pwd`
+
+    nohup $BASEDIR/ims -log_dir=/data/logs/ims ims.cfg >/data/logs/ims/ims.log 2>&1 &
+
+    nohup $BASEDIR/imr -log_dir=/data/logs/imr imr.cfg >/data/logs/imr/imr.log 2>&1 &
+
+    nohup $BASEDIR/im -log_dir=/data/logs/im im.cfg >/data/logs/im/im.log 2>&1 &
+
+
