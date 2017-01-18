@@ -37,7 +37,7 @@ func (client *Client) PublishPeerMessage(appid int64, im *IMMessage) {
 	p.Appid = fmt.Sprintf("%d", appid)
 	p.Title = ""
 	p.Alert = im.content
-	p.Type = 4
+	p.Type = 6
 	p.Userids = fmt.Sprintf("%d", im.receiver)
 	p.Sender = im.sender
 
@@ -64,7 +64,7 @@ func (client *Client) PublishGroupMessage(appid int64, receivers []int64, im *IM
 	p.Appid = fmt.Sprintf("%d", appid)
 	p.Title = ""
 	p.Alert = im.content
-	p.Type = 4
+	p.Type = 6
 	userids := ""
 	for _, m := range receivers {
 		if userids != "" {
